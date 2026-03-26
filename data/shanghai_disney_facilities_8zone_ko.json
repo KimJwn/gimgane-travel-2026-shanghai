@@ -1,0 +1,132 @@
+﻿{
+  "schema_version": 2,
+  "updated_at": "2026-03-23",
+  "source_note": "User provided facilities reference (ko)",
+  "park": "Shanghai Disneyland",
+  "meta": {
+    "dark_rides_2025_count": 7,
+    "fastpass_supported_attractions": [
+      "Seven Dwarfs Mine Train",
+      "Peter Pan's Flight",
+      "The Many Adventures of Winnie the Pooh",
+      "TRON Lightcycle Power Run",
+      "Buzz Lightyear Planet Rescue",
+      "Pirates of the Caribbean: Battle for the Sunken Treasure",
+      "Zootopia: Hot Pursuit"
+    ]
+  },
+  "zones": [
+    {
+      "id": "ENTRANCE",
+      "ko": "출입구(미키 에비뉴)",
+      "en": "Shanghai Disneyland (Main Entrance / Mickey Avenue)",
+      "attractions": [
+        {"ko": "캐릭터 그리팅", "en": "Character Meet & Greets"}
+      ],
+      "restaurants": ["쿠키앤 베이커리 카페", "일 파피리노", "미키 & 팔스 마켓 카페", "칩 & 데일의 트리하우스 간식"],
+      "shops": ["에비뉴 M 아케이드", "평온한 코너", "휘파람 정지 상점", "럭키 익스프레스"],
+      "stamp_points": ["M 미키박물관 내부", "더피의 가게 내부"]
+    },
+    {
+      "id": "GARDENS",
+      "ko": "상상의 정원",
+      "en": "Gardens of Imagination",
+      "attractions": [
+        {"ko": "판타지아 캐러셀", "en": "Fantasia Carousel"},
+        {"ko": "하늘을 나는 덤보", "en": "Dumbo the Flying Elephant"},
+        {"ko": "마블 유니버스", "en": "Marvel Universe"}
+      ],
+      "restaurants": ["티모시의 간식", "피크닉 바구니", "방황의 달 레스토랑"],
+      "shops": ["마블 기프트샵", "스커틀의 반짝샵", "케이시 주니어샵"],
+      "stamp_points": ["마블 유니버스", "판타지 캐러셀 뒷골목"]
+    },
+    {
+      "id": "ADVENTURE_ISLE",
+      "ko": "어드벤처아일",
+      "en": "Adventure Isle",
+      "attractions": [
+        {"ko": "소어링 오버 호라이즌", "en": "Soaring Over the Horizon", "priority": "high"},
+        {"ko": "로어링 래피드", "en": "Roaring Rapids", "priority": "high"},
+        {"ko": "캠프 디스커버리", "en": "Camp Discovery"},
+        {"ko": "주니어 탐험가 캠프", "en": "Junior Explorer Camp"}
+      ],
+      "restaurants": ["다람쥐 스낵", "더피와 친구들 축하 홀"],
+      "shops": ["더피의 상점"],
+      "notes": ["로어링 래피드 물 튐 강함, 우비 권장", "타잔 공연은 종료 언급"],
+      "stamp_points": ["소호상포 내부", "캠프 디스커버리 입장 근처"]
+    },
+    {
+      "id": "TREASURE_COVE",
+      "ko": "트레저코브",
+      "en": "Treasure Cove",
+      "attractions": [
+        {"ko": "캐리비안의 해적 - 침몰선의 전투", "en": "Pirates of the Caribbean: Battle for the Sunken Treasure", "priority": "high"},
+        {"ko": "사이렌의 복수", "en": "Siren's Revenge"},
+        {"ko": "익스플로러 카누", "en": "Explorer Canoes"},
+        {"ko": "폭풍의 눈: 잭 스패로우 스턴트 스펙타큘러", "en": "Eye of the Storm: Captain Jack's Stunt Spectacular"},
+        {"ko": "난파선 해안", "en": "Shipwreck Shore"}
+      ],
+      "restaurants": ["바르보사의 현상금", "Pintel & Ragetti's Grub to Grab", "토르투가 간식", "스낵 크라켄"],
+      "shops": ["금화 시장", "졸리 집시"],
+      "stamp_points": ["침몰선 근처 1곳"]
+    },
+    {
+      "id": "TOY_STORY_LAND",
+      "ko": "토이스토리랜드",
+      "en": "Toy Story Land",
+      "attractions": [
+        {"ko": "RC 레이서", "en": "Rex's Racers", "priority": "high"},
+        {"ko": "우디의 라운드업", "en": "Woody's Round-Up", "priority": "high"},
+        {"ko": "슬링키 독 스핀", "en": "Slinky Dog Spin"}
+      ],
+      "restaurants": ["롯소 도시락"],
+      "shops": ["장난감 헛간"],
+      "notes": ["투모로우랜드와 판타지랜드 사이", "Rex/우디는 패스트패스 없음"],
+      "stamp_points": ["알의 장난감 가게 입구 근처"]
+    },
+    {
+      "id": "FANTASYLAND",
+      "ko": "판타지랜드",
+      "en": "Fantasyland",
+      "attractions": [
+        {"ko": "원스 어폰 어 타임 어드벤처", "en": "Once Upon a Time Adventure"},
+        {"ko": "일곱 난쟁이의 탄광열차", "en": "Seven Dwarfs Mine Train", "priority": "high"},
+        {"ko": "피터팬의 하늘여행", "en": "Peter Pan's Flight", "priority": "high"},
+        {"ko": "곰돌이 푸의 모험", "en": "The Many Adventures of Winnie the Pooh", "priority": "high"},
+        {"ko": "크리스탈 그로토의 항해", "en": "Voyage to the Crystal Grotto"},
+        {"ko": "허니팟 스핀", "en": "Hunny Pot Spin"},
+        {"ko": "이상한 나라의 앨리스 미로", "en": "Alice in Wonderland Maze"},
+        {"ko": "겨울왕국: 싱어롱 셀레브레이션", "en": "Frozen: Sing-Along Celebration"}
+      ],
+      "restaurants": ["피노키오 빌리지 키친", "로얄 연회장", "얽힌 나무 선술집", "트루바두르 간식", "요정 대모의 찬장"],
+      "shops": ["비비디 바비디 부티크", "캐슬 인카운터 부티크", "백 에이커 상품", "코티지 골동품", "판타지 페어"],
+      "stamp_points": ["캐슬 외부", "곰돌이푸 상점", "앨리스 미로 출구", "미키의동심포 상점"]
+    },
+    {
+      "id": "TOMORROWLAND",
+      "ko": "투모로우랜드",
+      "en": "Tomorrowland",
+      "attractions": [
+        {"ko": "트론 라이트사이클 파워 런", "en": "TRON Lightcycle Power Run", "priority": "high"},
+        {"ko": "버즈 라이트이어의 우주 레인저 스핀", "en": "Buzz Lightyear Planet Rescue", "priority": "high"},
+        {"ko": "스티치 인카운터", "en": "Stitch Encounter"},
+        {"ko": "제트팩스", "en": "Jet Packs"},
+        {"ko": "픽사 모험 여행", "en": "Pixar Adventure Journey"},
+        {"ko": "트론 렐름 쉐보레 디지털 챌린지", "en": "TRON Realm Chevrolet Digital Challenge"}
+      ],
+      "restaurants": ["스타게이저 그릴", "스타 트레일 스낵"],
+      "shops": ["은하계 수입", "투모로우랜드 파빌리온 샵", "전원 공급 장치"],
+      "notes": ["스페이스 마운틴 없음"],
+      "stamp_points": ["스티치 가게 내부", "투모로우랜드 하층 상점 근처"]
+    },
+    {
+      "id": "ZOOTOPIA",
+      "ko": "주토피아",
+      "en": "Zootopia",
+      "attractions": [
+        {"ko": "주토피아: 핫 퍼슈트", "en": "Zootopia: Hot Pursuit", "priority": "high"}
+      ],
+      "notes": ["2023-12-20 개장", "유일한 주토피아 테마존"]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+﻿point_id,name,type,x,y,zone,notes
+ENT,입구/출구,gate,14,52,Entry,메인 입출구
+MAV,Mickey Avenue,zone,29,47,Main Street,입출구/메인샵
+GDN,Gardens of Imagination,zone,47,36,Central Hub,퍼레이드/일루미네이션
+TML,Tomorrowland,zone,66,26,Tomorrowland,TRON 근접
+TRN,TRON Lightcycle Power Run,attraction,64,24,Tomorrowland,핵심 어트랙션
+ZTP,Zootopia,zone,56,12,Zootopia,Hot Pursuit 근접
+HOT,Hot Pursuit,attraction,54,11,Zootopia,핵심 어트랙션
+TSC,Treasure Cove,zone,42,18,Treasure Cove,캐리비안/공연
+PIR,캐리비안 해적,attraction,39,16,Treasure Cove,핵심 어트랙션
+FFR,Fashions by Fru Fru,shop,50,15,Zootopia,주토피아 샵
+DBL,Doubloon Market,shop,35,21,Treasure Cove,캐리비안 근접 샵
+IGI,Intergalactic Imports,shop,58,29,Tomorrowland,TRON 근접 샵
+AMA,Avenue M Arcade,shop,26,50,Main Street,파크 내 메인 샵
+WOD,World of Disney,shop,15,59,Disneytown,파크 외 대형 샵
+PAR,퍼레이드 관람 포인트,show,36,39,Central Hub,Storybook Express
+ILL,일루미네이션 관람 포인트,show,51,39,Central Hub,21:15

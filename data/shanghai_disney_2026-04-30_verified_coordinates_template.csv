@@ -1,0 +1,11 @@
+﻿code,name,lat,lng,source,confidence,verified_at_kst
+ENT,입구/출구,31.14645,121.65892,manual_estimate,low,
+PIR,캐리비안 해적,31.14485,121.65860,manual_estimate,low,
+ZOO,주토피아 (Hot Pursuit),31.14352,121.66110,manual_estimate,low,
+TRN,TRON,31.14510,121.66200,manual_estimate,low,
+GDN,중앙 정원 관람 포인트,31.14466,121.66020,manual_estimate,low,
+AMA,Avenue M Arcade,31.14615,121.65938,manual_estimate,low,
+WOD,World of Disney (Disneytown),31.14695,121.65770,manual_estimate,low,
+FFR,Fashions by Fru Fru,31.14390,121.66080,manual_estimate,low,
+DBL,Doubloon Market,31.14505,121.65895,manual_estimate,low,
+IGI,Intergalactic Imports,31.14545,121.66170,manual_estimate,low,

@@ -1,0 +1,441 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>상하이 디즈니 실제 지도 동선 (중년 부부용)</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <style>
+    :root{--bg:#edf4f0;--ink:#1f2937;--muted:#4b5563;--accent:#0f766e;--alt:#b45309;--card:#fff;--line:#d1d5db}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Noto Sans KR","Malgun Gothic","Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+    .wrap{max-width:1220px;margin:16px auto;padding:0 12px}
+    .top{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+    h1{margin:0 0 6px;font-size:27px;line-height:1.2}
+    .desc{margin:0;font-size:17px;color:var(--muted);line-height:1.5}
+    .warn{margin:8px 0 0;font-size:14px;color:#7c2d12;line-height:1.5;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:8px 10px}
+    .tip{margin:8px 0 0;font-size:14px;color:#1f2937;line-height:1.45;background:#eef2ff;border:1px solid #c7d2fe;border-radius:10px;padding:7px 10px}
+    .route-row{margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:nowrap;overflow-x:auto}
+    .controls{margin-top:0;display:flex;flex-wrap:nowrap;gap:8px;flex:0 0 auto}
+    .legend{margin-top:0;font-size:12px;color:#374151;display:flex;gap:10px;flex-wrap:nowrap;flex:0 0 auto}
+    .dot{display:inline-block;width:10px;height:10px;border-radius:999px;margin-right:4px}
+    .nav-switch{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .nav-switch a{display:inline-block;text-decoration:none;border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;font-size:11px;font-weight:700;color:#111827}
+    .nav-switch a.active{background:#111827;border-color:#111827;color:#fff}
+    button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;font-size:11px;font-weight:700;cursor:pointer}
+    button.active.routeA{border-color:var(--accent);background:#ecfeff;color:#115e59}
+    button.active.routeB{border-color:var(--alt);background:#fff7ed;color:#9a3412}
+    .grid{display:grid;grid-template-columns:1fr 340px;gap:10px}
+    #map{width:100%;height:auto;aspect-ratio:920/740;min-height:560px;border-radius:14px;border:1px solid var(--line);overflow:hidden}
+    .side{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;overflow:auto;max-height:none}
+    .side h2{margin:0 0 8px;font-size:19px}
+    .metric{font-size:14px;line-height:1.55;margin-bottom:12px}
+    .list{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+    .list li{position:relative;display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;padding:0;border:none;background:transparent}
+    .list li::after{content:"";position:absolute;left:11px;top:24px;bottom:-8px;width:2px;background:#cbd5e1}
+    .list li:last-child::after{display:none}
+    .step-card{border:1px solid var(--line);border-radius:10px;padding:8px;font-size:14px;line-height:1.45;background:#fafafa}
+    .n{display:inline-block;width:24px;height:24px;border-radius:999px;text-align:center;line-height:24px;font-size:13px;font-weight:800;background:#111827;color:#fff}
+    .hint{margin-top:10px;font-size:13px;color:var(--muted);line-height:1.5}
+    .subhead{margin:12px 0 6px;font-size:14px;font-weight:800;color:#111827}
+    .mini{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+    .mini li{border:1px solid #d1d5db;border-radius:8px;padding:6px;font-size:12px;line-height:1.35;background:#fff}
+    .tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .tools button{font-size:12px;padding:6px 8px;border-radius:8px}
+    .leaflet-popup-content{font-size:14px;line-height:1.45;margin:10px 12px}
+    .pin{width:34px;height:34px;border-radius:999px;background:#0f766e;color:#fff;border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;position:relative}
+    .pin span{position:relative;z-index:1}
+    .pin.shape-attraction{border-radius:6px}
+    .pin.shape-shop{border-radius:0;clip-path:polygon(50% 4%, 6% 94%, 94% 94%)}
+    .pin-label-only{background:rgba(255,255,255,0.82);border:1px solid #d1d5db;border-radius:8px;color:#111827;font-size:9px;font-weight:800;padding:2px 6px;box-shadow:0 1px 6px rgba(0,0,0,.12);white-space:nowrap}
+    .pin.alt{background:#b45309}
+    .ko-label{background:rgba(255,255,255,0.92);border:1px solid #d1d5db;border-radius:8px;padding:3px 6px;font-size:12px;font-weight:800;color:#111827;white-space:nowrap;box-shadow:0 1px 6px rgba(0,0,0,.16);pointer-events:none}
+    .zone-tip{background:rgba(255,255,255,0.82);border:1px solid #d1d5db;box-shadow:0 1px 6px rgba(0,0,0,.12);padding:2px 6px;margin:0;border-radius:8px;color:#111827}
+    .zone-tip:before{display:none}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}h1{font-size:24px}.desc,button{font-size:15px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>상하이 디즈니 실제 지도 동선 (4/30, 중년 부부 체력보존형)</h1>
+    <p class="desc">실제 지리 지도 위에 동선을 얹었습니다. 버튼으로 루트를 바꿔 보고, 번호 순서대로 이동하면 됩니다.</p>
+    <div class="nav-switch">
+      <a href="../START_HERE.html" aria-label="메인으로">&lt;</a>
+      <a class="active" href="./shanghai_disney_2026-04-30_live_map.html">실제 지도 보기</a>
+      <a href="./shanghai_disney_2026-04-30_sketch_map.html">그림 지도 보기</a>
+      <a href="./shanghai_disney_2026-04-30_calibration_map.html">실제지도 매칭</a>
+    </div>
+    <div class="route-row">
+      <div class="controls">
+        <button id="btnA" class="routeA active">A안 동선 (일루미네이션 본다)</button>
+        <button id="btnB" class="routeB">B안 동선 (일루미네이션 안 본다)</button>
+      </div>
+      <div class="legend">
+        <span><i class="dot" style="background:#0f766e"></i>A안 동선</span>
+        <span><i class="dot" style="background:#b45309"></i>B안 동선</span>
+        <span><i class="dot" style="background:#111827"></i>번호 순서</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div id="map"></div>
+    <aside class="side">
+      <h2>루트 요약</h2>
+      <div class="metric" id="metric">계산 중...</div>
+      <ul class="list" id="steps"></ul>
+      <div class="hint">권장: 랜드 점프 최소화가 핵심입니다. 대기 76분 이상이면 핵심 1개 스킵 후 휴식/가벼운 쇼핑으로 전환.</div>
+      <div class="subhead">클릭 매칭 로그 (최근 20개)</div>
+      <ul id="matchLog" class="mini"></ul>
+      <div class="subhead">매칭 필요 리스트 (미매칭)</div>
+      <ul id="needsList" class="mini"></ul>
+      <div class="tools">
+        <button id="copyNeedsCsv">미매칭 CSV 복사</button>
+        <button id="copyNeedsJson">미매칭 JSON 복사</button>
+        <button id="clearLogs">로그 초기화</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+const map=L.map('map',{zoomControl:true}).setView([31.1448,121.6598],16);
+const noLabel=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',{maxZoom:19,attribution:'ⓒ OpenStreetMap, ⓒ CARTO'});
+const esri=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles ⓒ Esri'});
+const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'ⓒ OpenStreetMap'}).addTo(map);
+const koLabelLayer=L.layerGroup();
+
+const CUSTOM_DICT_KEY='shanghai_disney_custom_dict_v1';
+const CALIBRATION_PIN_KEY='shanghai_disney_calibration_pins_v1';
+const defaultPoints={
+  ENT:{name:'입구/출구',lat:31.14645,lng:121.65892,note:'짐보관, 입장, 퇴장'},
+  MAV:{name:'미키 애비뉴',lat:31.14615,lng:121.65938,note:'입구 직결 메인 스트리트/상점 밀집'},
+  WSL:{name:'위싱 스타 레이크(인공 호수)',lat:31.14755,lng:121.65665,note:'디즈니타운 옆 호숫가 산책/식음'},
+  PIR:{name:'캐리비안 해적',lat:31.14485,lng:121.65860,note:'트레저 코브 핵심'},
+  EXPC:{name:'탐험가의 배',lat:31.14472,lng:121.65888,note:'트레저코브 보트형 어트랙션'},
+  SOA:{name:'소어링 오버 더 호라이즌',lat:31.14416,lng:121.65962,note:'어드벤처아일 대표 어트랙션'},
+  CAMP:{name:'캠프 디스커버리',lat:31.14388,lng:121.65920,note:'어드벤처아일 체험형 어트랙션'},
+  ZOO:{name:'주토피아(핫 퍼슈트)',lat:31.14352,lng:121.66110,note:'대기 길면 우선순위 조정'},
+  TRN:{name:'트론',lat:31.14510,lng:121.66200,note:'고강도 1회 원칙'},
+  BLPR:{name:'버즈 라이트이어 플래닛 레스큐',lat:31.14552,lng:121.66163,note:'투모로우랜드 슈팅 다크라이드'},
+  PPF:{name:'피터팬의 하늘여행',lat:31.14462,lng:121.66118,note:'판타지랜드 다크라이드'},
+  REX:{name:'렉스 레이서',lat:31.14582,lng:121.66272,note:'토이스토리랜드 스릴형'},
+  ALI:{name:'이상한 나라의 앨리스 미로',lat:31.14428,lng:121.66062,note:'판타지랜드 워크스루'},
+  GDN:{name:'중앙 정원 관람 포인트',lat:31.14466,lng:121.66020,note:'퍼레이드/일루미네이션'},
+  LFF:{name:'불꽃놀이 명당',lat:31.14474,lng:121.66032,note:'야간 쇼 관람 포인트'},
+  AMA:{name:'애비뉴 M 아케이드(미키 애비뉴 내부)',lat:31.14617,lng:121.65934,note:'미키 애비뉴 내 개별 상점(서브 POI)'},
+  WOD:{name:'월드 오브 디즈니(디즈니타운)',lat:31.14695,lng:121.65770,note:'파크 밖 대형 샵'},
+  FFR:{name:'프루 프루 패션',lat:31.14390,lng:121.66080,note:'주토피아 근접 샵'},
+  DBL:{name:'더블룬 마켓',lat:31.14505,lng:121.65895,note:'캐리비안 근접 샵'},
+  IGI:{name:'인터갤럭틱 임포트',lat:31.14545,lng:121.66170,note:'트론 근접 샵'}
+};
+const zoneLabels=[
+  {name:'입구',lat:31.14645,lng:121.65892},
+  {name:'미키 애비뉴',lat:31.14612,lng:121.65936},
+  {name:'상상의 정원',lat:31.14470,lng:121.66025},
+  {name:'트레저코브',lat:31.14500,lng:121.65860},
+  {name:'어드벤처아일',lat:31.14410,lng:121.65945},
+  {name:'판타지랜드',lat:31.14435,lng:121.66095},
+  {name:'토이스토리랜드',lat:31.14585,lng:121.66245},
+  {name:'투모로우랜드',lat:31.14520,lng:121.66175},
+  {name:'주토피아',lat:31.14370,lng:121.66095}
+];
+zoneLabels.forEach((z)=>{
+  L.circleMarker([z.lat,z.lng],{radius:1,opacity:0,fillOpacity:0,interactive:false})
+    .addTo(koLabelLayer)
+    .bindTooltip(`<div class="ko-label">${z.name}</div>`,{
+      permanent:true,
+      direction:'top',
+      offset:[0,-10],
+      className:'zone-tip',
+      opacity:1
+    });
+});
+L.control.layers({'한글용 무라벨 지도(권장)':noLabel,'위성 지도':esri,'일반 지도(OSM)':osm},{'존 라벨(영역명)':koLabelLayer},{collapsed:false}).addTo(map);
+
+let points=JSON.parse(JSON.stringify(defaultPoints));
+const coordStatus=document.getElementById('coordStatus');
+try{
+  const raw=localStorage.getItem('shanghai_disney_verified_points_v1');
+  if(raw){
+    const verified=JSON.parse(raw);
+    Object.keys(defaultPoints).forEach((k)=>{
+      if(verified[k]&&typeof verified[k].lat==='number'&&typeof verified[k].lng==='number'){ points[k].lat=verified[k].lat; points[k].lng=verified[k].lng; }
+    });
+    if(coordStatus) coordStatus.textContent='좌표 상태: 검증 좌표 적용됨 (좌표 검증기 저장값)';
+  }
+}catch(_){ if(coordStatus) coordStatus.textContent='좌표 상태: 기본 추정 좌표 (검증 좌표 로드 실패)'; }
+
+try{
+  const rawPins=localStorage.getItem(CALIBRATION_PIN_KEY);
+  if(rawPins){
+    const pinList=JSON.parse(rawPins);
+    const byId=Object.fromEntries((Array.isArray(pinList)?pinList:[]).map((p)=>[p.id,p]));
+    ['ENT','MAV','WSL','PIR','EXPC','SOA','CAMP','ZOO','TRN','BLPR','PPF','REX','ALI','GDN','LFF','AMA','FFR','DBL','IGI'].forEach((k)=>{ if(byId[k]&&points[k]){ points[k].lat=byId[k].lat; points[k].lng=byId[k].lng; } });
+    if(byId.WOD){ points.WOD.lat=byId.WOD.lat; points.WOD.lng=byId.WOD.lng; }
+    if(byId.DTN){ points.WOD.lat=byId.DTN.lat; points.WOD.lng=byId.DTN.lng; }
+  }
+}catch(_){ }
+
+const routeA=[
+  {key:'ENT',label:'12:00 입장/짐보관',nameOverride:'입구'},{key:'GDN',label:'12:20 중앙 성 포토 5~10분'},{key:'PIR',label:'13:00 캐리비안 해적'},{key:'DBL',label:'13:45 근접 쇼핑 10분'},
+  {key:'ZOO',label:'14:20 주토피아'},{key:'FFR',label:'15:10 근접 쇼핑 10분'},{key:'TRN',label:'15:40 트론'},
+  {key:'IGI',label:'16:30 근접 쇼핑 10분'},{key:'LFF',label:'19:30 관람 포인트 이동'},{key:'ENT',label:'21:45 퇴장',nameOverride:'출구'}
+];
+const routeB=[
+  {key:'ENT',label:'12:00 입장/짐보관',nameOverride:'입구'},{key:'PIR',label:'13:00 캐리비안 해적'},{key:'ZOO',label:'14:20 주토피아'},
+  {key:'TRN',label:'15:40 트론'},{key:'MAV',label:'20:20 미키 애비뉴 쇼핑/휴식'},{key:'WOD',label:'21:35 디즈니타운 추가 쇼핑'}
+];
+const walkLegs={
+  'ENT>GDN':[[31.14602,121.65930],[31.14535,121.65995],[31.14490,121.66022]],
+  'GDN>PIR':[[31.14500,121.65995],[31.14500,121.65918],[31.14494,121.65882]],
+  'PIR>DBL':[[31.14495,121.65882]],
+  'DBL>ZOO':[[31.14506,121.65920],[31.14490,121.66022],[31.14440,121.66062],[31.14386,121.66096]],
+  'ZOO>FFR':[[31.14374,121.66096]],
+  'FFR>TRN':[[31.14395,121.66096],[31.14472,121.66120],[31.14512,121.66166]],
+  'TRN>IGI':[[31.14530,121.66182]],
+  'IGI>LFF':[[31.14502,121.66128],[31.14488,121.66070]],
+  'LFF>ENT':[[31.14488,121.66022],[31.14535,121.65995],[31.14602,121.65930]],
+  'ENT>PIR':[[31.14602,121.65930],[31.14518,121.65918],[31.14494,121.65882]],
+  'PIR>ZOO':[[31.14502,121.65916],[31.14490,121.66022],[31.14440,121.66062],[31.14386,121.66096]],
+  'ZOO>TRN':[[31.14386,121.66096],[31.14472,121.66120],[31.14512,121.66166]],
+  'TRN>MAV':[[31.14512,121.66166],[31.14535,121.65995],[31.14602,121.65930]],
+  'MAV>WOD':[[31.14645,121.65900],[31.14682,121.65828]]
+};
+
+const baseDictionary=[
+  {zh:'上海迪士尼??',ko:'입구',en:'Shanghai Disneyland (Main Entrance)'},
+  {zh:'迪士尼小?',ko:'디즈니 타운',en:'Disneytown'},
+  {zh:'星愿湖',ko:'위싱 스타 레이크',en:'Wishing Star Lake'},
+  {zh:'米奇大街',ko:'미키 애비뉴',en:'Mickey Avenue'},{zh:'奇想花?',ko:'중앙정원(기상화원)',en:'Gardens of Imagination'},
+  {zh:'?藏?',ko:'트레저코브',en:'Treasure Cove'},{zh:'探??',ko:'어드벤처아일',en:'Adventure Isle'},{zh:'探?家?木舟',ko:'탐험가의 배',en:'Explorer Canoes'},
+  {zh:'?翔·?越地平?',ko:'소어링 오버 더 호라이즌',en:'Soaring Over the Horizon'},{zh:'古迹探索?',ko:'캠프 디스커버리',en:'Camp Discovery'},
+  {zh:'?幻世界',ko:'판타지랜드',en:'Fantasyland'},{zh:'小??天空奇遇',ko:'피터팬의 하늘여행',en:"Peter Pan's Flight"},{zh:'????游仙境迷?',ko:'이상한 나라의 앨리스 미로',en:'Alice in Wonderland Maze'},
+  {zh:'迪士尼·皮克斯玩具???',ko:'토이스토리랜드',en:'Toy Story Land'},{zh:'抱抱??天??',ko:'렉스 레이서',en:"Rex's Racers"},
+  {zh:'明日世界',ko:'투모로우랜드',en:'Tomorrowland'},{zh:'巴斯光年星??救',ko:'버즈 라이트이어 플래닛 레스큐',en:'Buzz Lightyear Planet Rescue'},{zh:'?狂?物城',ko:'주토피아',en:'Zootopia'},
+  {zh:'加勒比海?',ko:'캐리비안 해적',en:'Pirates of the Caribbean'},{zh:'?力追踪',ko:'핫 퍼슈트',en:'Hot Pursuit'},
+  {zh:'??速光?',ko:'트론 라이트사이클',en:'TRON Lightcycle Power Run'},{zh:'世界商店',ko:'월드 오브 디즈니 상점',en:'World of Disney Store'}
+];
+const manualZhEnMap=[
+  ['上海迪士尼??','Shanghai Disneyland (Main Entrance)'],['迪士尼小?','Disneytown'],['星愿湖','Wishing Star Lake'],['世界商店','World of Disney Store'],['米奇大街','Mickey Avenue'],['奇想花?','Gardens of Imagination'],['?藏?','Treasure Cove'],['探??','Adventure Isle'],['探?家?木舟','Explorer Canoes'],['?翔·?越地平?','Soaring Over the Horizon'],['古迹探索?','Camp Discovery'],['?幻世界','Fantasyland'],['小??天空奇遇',"Peter Pan's Flight"],['????游仙境迷?','Alice in Wonderland Maze'],['迪士尼·皮克斯玩具???','Toy Story Land'],['抱抱??天??',"Rex's Racers"],['明日世界','Tomorrowland'],['巴斯光年星??救','Buzz Lightyear Planet Rescue'],['?狂?物城','Zootopia'],['??船奇?','Doubloon Market'],['星??易港','Intergalactic Imports'],['妙趣无???店','Fashions by Fru Fru']
+];
+let customDictionary=[];
+try{ const raw=localStorage.getItem(CUSTOM_DICT_KEY); if(raw) customDictionary=JSON.parse(raw); if(!Array.isArray(customDictionary)) customDictionary=[]; }catch(_){ customDictionary=[]; }
+function matchByDictionary(zhText){ if(!zhText) return null; const all=[...customDictionary,...baseDictionary]; return all.find((x)=>zhText.includes(x.zh))||null; }
+function hasChinese(v){ return /[\u3400-\u9FFF]/.test(String(v||'')); }
+function manualTranslateZhToEn(zh){ const text=String(zh||'').trim(); if(!text) return ''; const e=manualZhEnMap.find(([k])=>text===k); if(e) return e[1]; const i=manualZhEnMap.find(([k])=>text.includes(k)); return i?i[1]:''; }
+function sanitizeEnglish(zh,enCandidate){ const c=String(enCandidate||'').trim(); const l=c.toLowerCase(); if(l.includes('hill of festival')) return 'Festival Forest'; if(c&&!hasChinese(c)&&l!=='no match'&&l!=='unknown poi'&&l!=='needs manual translation') return c; const m=manualTranslateZhToEn(zh); const out=m||'Unknown POI'; return String(out).toLowerCase().includes('hill of festival')?'Festival Forest':out; }
+
+function meters(a,b){ const R=6371000; const toRad=d=>d*Math.PI/180; const dLat=toRad(b.lat-a.lat), dLng=toRad(b.lng-a.lng), lat1=toRad(a.lat), lat2=toRad(b.lat); const h=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+function metersLL(a,b){ return meters({lat:a[0],lng:a[1]},{lat:b[0],lng:b[1]}); }
+function parseHmFromLabel(label){
+  const m=String(label||'').match(/(\d{1,2}):(\d{2})/);
+  if(!m) return null;
+  return Number(m[1])*60+Number(m[2]);
+}
+function routeWindow(route){
+  let start=null,end=null,startText='',endText='';
+  route.forEach((r)=>{
+    const txt=String(r.label||'').match(/(\d{1,2}:\d{2})/);
+    const m=parseHmFromLabel(r.label);
+    if(m===null) return;
+    if(start===null){ start=m; startText=txt?txt[1]:''; }
+    end=m; endText=txt?txt[1]:'';
+  });
+  if(start===null||end===null) return null;
+  let diff=end-start;
+  if(diff<0) diff+=24*60;
+  return {startText,endText,diff};
+}
+function legPolyline(aKey,bKey){
+  const ab=`${aKey}>${bKey}`;
+  const ba=`${bKey}>${aKey}`;
+  if(walkLegs[ab]) return walkLegs[ab].slice();
+  if(walkLegs[ba]) return walkLegs[ba].slice().reverse();
+  return [];
+}
+function buildWalkPolyline(route){
+  const out=[];
+  route.forEach((r,i)=>{
+    const p=points[r.key];
+    if(i===0){ out.push([p.lat,p.lng]); return; }
+    const prev=route[i-1];
+    const mids=legPolyline(prev.key,r.key);
+    mids.forEach((m)=>out.push(m));
+    out.push([p.lat,p.lng]);
+  });
+  return out;
+}
+function polylineDistance(latlngs){
+  let d=0;
+  for(let i=0;i<latlngs.length-1;i++) d+=metersLL(latlngs[i],latlngs[i+1]);
+  return d;
+}
+function nearestKnownPoint(lat,lng){ let best=null; Object.values(points).forEach((p)=>{ const d=meters({lat,lng},p); if(!best||d<best.d) best={d,p}; }); return best&&best.d<=220?best.p:null; }
+
+const MATCH_LOG_KEY='shanghai_disney_click_match_log_v1';
+const NEEDS_KEY='shanghai_disney_needs_matching_v1';
+let clickLogs=[],needsMatching=[];
+function normalizeName(v){ return String(v||'').replace(/\s+/g,' ').trim().toLowerCase(); }
+function dedupeNeedsByName(){ const seen=new Map(); needsMatching.forEach((n)=>{ const k=normalizeName(n.zh); if(!k) return; if(!seen.has(k)){ seen.set(k,n); return; } const p=seen.get(k); seen.set(k,(n.ts||'')>(p.ts||'')?n:p); }); needsMatching=[...seen.values()]; }
+function nowKst(){ const d=new Date(); const kst=new Date(d.getTime()+(9*60+d.getTimezoneOffset())*60000); return kst.toISOString().replace('T',' ').slice(0,19); }
+function loadLogs(){ try{ clickLogs=JSON.parse(localStorage.getItem(MATCH_LOG_KEY)||'[]'); needsMatching=JSON.parse(localStorage.getItem(NEEDS_KEY)||'[]'); dedupeNeedsByName(); needsMatching=needsMatching.map((x)=>({...x,en:sanitizeEnglish(x.zh,x.en)})); clickLogs=clickLogs.map((x)=>({...x,en:sanitizeEnglish(x.zh,x.en)})); }catch(_){ clickLogs=[]; needsMatching=[]; } }
+function saveLogs(){ localStorage.setItem(MATCH_LOG_KEY,JSON.stringify(clickLogs)); localStorage.setItem(NEEDS_KEY,JSON.stringify(needsMatching)); }
+function renderLogLists(){
+  const matchLogEl=document.getElementById('matchLog'); const needsEl=document.getElementById('needsList');
+  matchLogEl.innerHTML=clickLogs.length?clickLogs.slice(0,20).map((x)=>`<li><b>${x.result}</b> | 중문: ${x.zh}<br>한글: ${x.ko}<br>영문: ${sanitizeEnglish(x.zh,x.en)}<br><span style="color:#6b7280">${x.ts} | ${x.lat.toFixed(5)}, ${x.lng.toFixed(5)}</span></li>`).join(''):'<li>아직 클릭 기록이 없습니다.</li>';
+  needsEl.innerHTML=needsMatching.length?needsMatching.slice(0,20).map((x)=>`<li>중문: ${x.zh}<br>영문: ${sanitizeEnglish(x.zh,x.en)}<br>좌표: ${x.lat.toFixed(5)}, ${x.lng.toFixed(5)}<br><span style="color:#6b7280">${x.ts}</span></li>`).join(''):'<li>현재 미매칭 항목 없음</li>';
+}
+function addLogEntry(entry){ entry.en=sanitizeEnglish(entry.zh,entry.en); clickLogs.unshift(entry); if(clickLogs.length>200) clickLogs=clickLogs.slice(0,200); if(entry.result==='미매칭'){ const k=normalizeName(entry.zh); const idx=needsMatching.findIndex((x)=>normalizeName(x.zh)===k); if(idx>=0){ needsMatching[idx]={...needsMatching[idx],ko:entry.ko,en:entry.en,lat:entry.lat,lng:entry.lng,ts:entry.ts}; const up=needsMatching.splice(idx,1)[0]; needsMatching.unshift(up); } else { needsMatching.unshift({zh:entry.zh,ko:entry.ko,en:entry.en,lat:entry.lat,lng:entry.lng,ts:entry.ts}); } if(needsMatching.length>200) needsMatching=needsMatching.slice(0,200);} saveLogs(); renderLogLists(); }
+
+const GEO_GAP_MS=900, GEO_BLOCK_MS=120000; let geoLastAt=0, geoBlockedUntil=0; const geoCache=new Map();
+async function reverseGeocode(lat,lng,lang){ const now=Date.now(); if(now<geoBlockedUntil) return {__forbidden:true,__cooldown:true}; const key=`${lang}|${lat.toFixed(5)}|${lng.toFixed(5)}`; if(geoCache.has(key)) return geoCache.get(key); const wait=GEO_GAP_MS-(now-geoLastAt); if(wait>0) await new Promise((r)=>setTimeout(r,wait)); geoLastAt=Date.now(); const url=`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&namedetails=1&accept-language=${lang}`; const res=await fetch(url,{headers:{'Accept':'application/json'}}); if(res.status===403){ geoBlockedUntil=Date.now()+GEO_BLOCK_MS; return {__forbidden:true}; } if(!res.ok) return {__error:true}; const data=await res.json(); geoCache.set(key,data); return data; }
+function pointTypeByKey(key){
+  const k=String(key||'').toUpperCase();
+  if(['AMA','WOD','FFR','DBL','IGI'].includes(k)) return 'shop';
+  if(['PIR','EXPC','SOA','CAMP','ZOO','TRN','BLPR','PPF','REX','ALI','SDMT'].includes(k)) return 'attraction';
+  return 'other';
+}
+function markerSizeByKey(key){
+  const k=String(key||'').toUpperCase();
+  if(k==='AMA') return 26;
+  return 34;
+}
+function markerIcon(num,alt=false,key='',labelText=''){
+  const k=String(key||'').toUpperCase();
+  if(['AMA','ENT','WSL'].includes(k)){
+    const t = labelText || (k==='ENT' ? '입구' : (k==='WSL' ? '호수' : 'AMA'));
+    return L.divIcon({
+      className:'',
+      html:`<div class="pin-label-only">${t}</div>`,
+      iconSize:[38,20],
+      iconAnchor:[19,10]
+    });
+  }
+  const t=pointTypeByKey(key);
+  const shape=t==='shop'?'shape-shop':(t==='attraction'?'shape-attraction':'');
+  const sz=markerSizeByKey(key);
+  const bg = k==='WOD' ? '#d1d5db' : (alt ? '#b45309' : '#0f766e');
+  return L.divIcon({
+    className:'',
+    html:`<div class="pin ${shape}" style="width:${sz}px;height:${sz}px;background:${bg}"><span>${num}</span></div>`,
+    iconSize:[sz,sz],
+    iconAnchor:[Math.round(sz/2),Math.round(sz/2)]
+  });
+}
+let layerGroup=L.layerGroup().addTo(map);
+const poiLayer=L.layerGroup().addTo(map);
+function renderPoiMarkers(){
+  poiLayer.clearLayers();
+  [
+    {key:'MAV',tag:'MAV'},
+    {key:'WSL',tag:'LAKE'},
+    {key:'WOD',tag:'WOD'},
+    {key:'BLPR',tag:'BLPR'},
+    {key:'PPF',tag:'PPF'},
+    {key:'EXPC',tag:'EXPC'},
+    {key:'SOA',tag:'SOA'},
+    {key:'CAMP',tag:'CAMP'},
+    {key:'REX',tag:'REX'},
+    {key:'ALI',tag:'ALI'}
+  ].forEach((v)=>{
+    const p=points[v.key];
+    if(!p) return;
+    const t=pointTypeByKey(v.key);
+    const shape=t==='shop'?'shape-shop':(t==='attraction'?'shape-attraction':'');
+    const bg = String(v.key||'').toUpperCase()==='WOD' ? '#d1d5db' : '#1d4ed8';
+    L.marker([p.lat,p.lng],{
+      icon:L.divIcon({
+        className:'',
+        html:`<div class="pin ${shape}" style="background:${bg};font-size:8px"><span>${v.tag}</span></div>`,
+        iconSize:[34,34],
+        iconAnchor:[17,17]
+      })
+    })
+      .bindPopup(`<b>${p.name}</b><br>${p.note}<br><span style="color:#6b7280">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</span>`)
+      .addTo(poiLayer);
+  });
+}
+function spreadOverlaps(route){
+  const groups=new Map();
+  route.forEach((r,i)=>{
+    const key=r.key;
+    if(!groups.has(key)) groups.set(key,[]);
+    groups.get(key).push(i);
+  });
+  const out=route.map((r)=>({key:r.key,label:r.label,nameOverride:r.nameOverride,lat:points[r.key].lat,lng:points[r.key].lng}));
+  groups.forEach((idxs)=>{
+    if(idxs.length<=1) return;
+    const radius=0.00010;
+    idxs.forEach((idx,k)=>{
+      const angle=(2*Math.PI*k)/idxs.length;
+      out[idx].lat=out[idx].lat + radius*Math.sin(angle);
+      out[idx].lng=out[idx].lng + radius*Math.cos(angle);
+    });
+  });
+  return out;
+}
+function renderRoute(route,isAlt){
+  layerGroup.clearLayers();
+  const expanded=spreadOverlaps(route);
+  const latlngs=expanded.map((r)=>[r.lat,r.lng]);
+  L.polyline(latlngs,{color:isAlt?'#b45309':'#0f766e',weight:6,opacity:.9,dashArray:isAlt?'8 8':null}).addTo(layerGroup);
+  expanded.forEach((r,i)=>{
+    const p=points[r.key];
+    const displayName=r.nameOverride||p.name;
+    const m=L.marker([r.lat,r.lng],{icon:markerIcon(i+1,isAlt,r.key,displayName)}).bindPopup(`<b>${i+1}. ${displayName}</b><br>${r.label}<br>${p.note}`).addTo(layerGroup);
+    if(!['AMA','ENT','WSL'].includes(String(r.key||'').toUpperCase())){
+      m.bindTooltip(`${i+1}. ${displayName}`,{direction:'top',offset:[0,-20],permanent:true,className:'zone-tip'});
+    }
+  });
+  let total=0; for(let i=0;i<route.length-1;i++){ total+=meters(points[route[i].key],points[route[i+1].key]); }
+  const km=(total/1000).toFixed(2);
+  const walkMin=Math.round(total/53.3); // about 3.2km/h
+  const rw=routeWindow(route);
+  const planLine=rw?`계획표 총 소요(대기/탑승/휴식 포함): <b>${Math.floor(rw.diff/60)}시간 ${rw.diff%60}분</b> (${rw.startText}~${rw.endText})`:'계획표 총 소요: <b>시간표 미정</b>';
+  document.getElementById('metric').innerHTML=`${planLine}<br>총 이동거리(직선합): <b>${km} km</b> | 순수 도보 추정 <b>${walkMin}분</b><br>랜드 점프: <b>${Math.max(route.length-2,0)}회</b> | ${isAlt?'쇼 생략/쇼핑 마감형 루트':'일루미네이션 관람형 루트'}`;
+  document.getElementById('steps').innerHTML=route.map((r,i)=>{ const p=points[r.key]; const displayName=r.nameOverride||p.name; return `<li><span class="n">${i+1}</span><div class="step-card"><b>${displayName}</b><br>${r.label}<br>좌표: ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div></li>`; }).join('');
+  map.fitBounds(L.latLngBounds(latlngs),{padding:[30,30]});
+}
+
+document.getElementById('btnA').addEventListener('click',()=>{ document.getElementById('btnA').classList.add('active'); document.getElementById('btnB').classList.remove('active'); renderRoute(routeA,false); });
+document.getElementById('btnB').addEventListener('click',()=>{ document.getElementById('btnB').classList.add('active'); document.getElementById('btnA').classList.remove('active'); renderRoute(routeB,true); });
+function toNeedsCsv(){ const head='zh,ko,en,lat,lng,timestamp_kst'; const lines=needsMatching.map((x)=>`"${(x.zh||'').replaceAll('"','""')}","${(x.ko||'').replaceAll('"','""')}","${(x.en||'').replaceAll('"','""')}",${x.lat},${x.lng},${x.ts}`); return [head,...lines].join('\n'); }
+async function copyText(text,msg){ try{ await navigator.clipboard.writeText(text); alert(msg); }catch(_){ alert('복사 실패. 브라우저 권한을 확인해 주세요.'); } }
+document.getElementById('copyNeedsCsv').addEventListener('click',()=>copyText(toNeedsCsv(),'미매칭 CSV를 복사했습니다.'));
+document.getElementById('copyNeedsJson').addEventListener('click',()=>copyText(JSON.stringify(needsMatching,null,2),'미매칭 JSON을 복사했습니다.'));
+document.getElementById('clearLogs').addEventListener('click',()=>{ if(!confirm('클릭 로그/미매칭 리스트를 모두 초기화할까요?')) return; clickLogs=[]; needsMatching=[]; saveLogs(); renderLogLists(); });
+
+map.on('click',async(e)=>{
+  const {lat,lng}=e.latlng;
+  const popup=L.popup({maxWidth:240,autoPanPadding:[10,10]}).setLatLng([lat,lng]).setContent('지명 조회 중...').openOn(map);
+  try{
+    const [zhData,enData]=await Promise.all([reverseGeocode(lat,lng,'zh-CN'),reverseGeocode(lat,lng,'en')]);
+    if(zhData?.__forbidden||enData?.__forbidden){ popup.setContent('<b>조회 제한(403)</b><br><span style="color:#6b7280">잠시 후 다시 시도</span>'); return; }
+    if(zhData?.__error||enData?.__error){ popup.setContent('<b>조회 불안정</b><br><span style="color:#6b7280">네트워크 재시도</span>'); return; }
+    const zhName=zhData?.namedetails?.name||zhData?.name||zhData?.address?.attraction||zhData?.address?.tourism||zhData?.display_name||'중국어 지명 미확인';
+    const enName=enData?.namedetails?.name||enData?.name||enData?.address?.attraction||enData?.address?.tourism||enData?.display_name||'Unknown POI';
+    const dict=matchByDictionary(zhName)||matchByDictionary(zhData?.display_name||'');
+    const near=nearestKnownPoint(lat,lng);
+    const koText=dict?dict.ko:(near?near.name:'매칭 없음');
+    const enText=dict?dict.en:sanitizeEnglish(zhName,enName || (near?near.name:''));
+    const isMatched=!!dict;
+    addLogEntry({result:isMatched?'매칭완료':'미매칭',zh:zhName,ko:koText,en:enText,lat,lng,ts:nowKst()});
+    popup.setContent(`<b>클릭 지점 지명</b><br>중국어: ${zhName}<br>한국어: ${koText}<br>영어: ${enText}<br><span style="color:#6b7280">좌표: ${lat.toFixed(5)}, ${lng.toFixed(5)}</span>`);
+  }catch(_){
+    const near=nearestKnownPoint(lat,lng);
+    addLogEntry({result:'미매칭',zh:'중국어 지명 미확인(조회실패)',ko:near?near.name:'매칭 없음',en:near?near.name:'Unknown POI',lat,lng,ts:nowKst()});
+    popup.setContent(`<b>지명 조회 실패</b><br>네트워크 또는 지오코딩 제한<br>한국어 추정: ${near?near.name:'매칭 없음'}<br><span style="color:#6b7280">좌표: ${lat.toFixed(5)}, ${lng.toFixed(5)}</span>`);
+  }
+});
+
+loadLogs(); renderLogLists(); renderRoute(routeA,false); renderPoiMarkers();
+</script>
+</body>
+</html>
+
+
+
+

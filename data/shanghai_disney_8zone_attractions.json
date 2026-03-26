@@ -1,0 +1,93 @@
+﻿{
+  "schema_version": 1,
+  "updated_at": "2026-03-23",
+  "park": "Shanghai Disneyland",
+  "zones": [
+    {
+      "id": "ENTRANCE",
+      "ko": "출입구",
+      "en": "Shanghai Disneyland (Main Entrance)",
+      "attractions": [
+        {"ko": "캐릭터 그리팅", "en": "Character Meet & Greets", "priority": "medium"}
+      ],
+      "notes": ["입장, 상점 밀집, 캐릭터 포토 중심"]
+    },
+    {
+      "id": "GARDENS",
+      "ko": "상상의 정원",
+      "en": "Gardens of Imagination",
+      "attractions": [
+        {"ko": "판타지아 캐러셀", "en": "Fantasia Carousel", "priority": "medium"},
+        {"ko": "덤보", "en": "Dumbo the Flying Elephant", "priority": "medium"},
+        {"ko": "마블 유니버스", "en": "Marvel Universe", "priority": "medium"}
+      ],
+      "notes": ["성 전면, 공연/관람 포인트"]
+    },
+    {
+      "id": "TREASURE_COVE",
+      "ko": "트레저코브",
+      "en": "Treasure Cove",
+      "attractions": [
+        {"ko": "캐리비안의 해적: 침몰 보물 전투", "en": "Pirates of the Caribbean: Battle for the Sunken Treasure", "priority": "high"},
+        {"ko": "익스플로러 카누", "en": "Explorer Canoes", "priority": "medium"}
+      ],
+      "notes": ["해적 테마 핵심 구역"]
+    },
+    {
+      "id": "ADVENTURE_ISLE",
+      "ko": "어드벤처아일",
+      "en": "Adventure Isle",
+      "attractions": [
+        {"ko": "로어링 래피드", "en": "Roaring Rapids", "priority": "high"},
+        {"ko": "소어링 오버 더 호라이즌", "en": "Soaring Over the Horizon", "priority": "high"},
+        {"ko": "캠프 디스커버리", "en": "Camp Discovery", "priority": "medium"}
+      ],
+      "notes": ["물 튐 강함, 우비 권장"]
+    },
+    {
+      "id": "FANTASYLAND",
+      "ko": "판타지랜드",
+      "en": "Fantasyland",
+      "attractions": [
+        {"ko": "세븐드워프 광산열차", "en": "Seven Dwarfs Mine Train", "priority": "high"},
+        {"ko": "피터팬의 비행", "en": "Peter Pan's Flight", "priority": "medium"},
+        {"ko": "위니 더 푸", "en": "The Many Adventures of Winnie the Pooh", "priority": "medium"},
+        {"ko": "앨리스 미로", "en": "Alice in Wonderland Maze", "priority": "medium"},
+        {"ko": "수정 동굴 항해", "en": "Voyage to the Crystal Grotto", "priority": "medium"}
+      ],
+      "notes": ["대형 구역, 가족형 어트랙션 밀집"]
+    },
+    {
+      "id": "TOY_STORY_LAND",
+      "ko": "토이스토리랜드",
+      "en": "Toy Story Land",
+      "attractions": [
+        {"ko": "렉스 레이서", "en": "Rex's Racers", "priority": "high"},
+        {"ko": "슬링키 독 스핀", "en": "Slinky Dog Spin", "priority": "medium"},
+        {"ko": "우디의 라운드업", "en": "Woody's Round-Up", "priority": "medium"}
+      ],
+      "notes": ["2018 확장 구역"]
+    },
+    {
+      "id": "TOMORROWLAND",
+      "ko": "투모로우랜드",
+      "en": "Tomorrowland",
+      "attractions": [
+        {"ko": "트론 라이트사이클", "en": "TRON Lightcycle Power Run", "priority": "high"},
+        {"ko": "버즈 라이트이어 플래닛 레스큐", "en": "Buzz Lightyear Planet Rescue", "priority": "medium"},
+        {"ko": "젯팩스", "en": "Jet Packs", "priority": "medium"},
+        {"ko": "스티치 인카운터", "en": "Stitch Encounter", "priority": "medium"}
+      ],
+      "notes": ["TRON 최상위 인기"]
+    },
+    {
+      "id": "ZOOTOPIA",
+      "ko": "주토피아",
+      "en": "Zootopia",
+      "attractions": [
+        {"ko": "주토피아: 핫 퍼슈트", "en": "Zootopia: Hot Pursuit", "priority": "high"}
+      ],
+      "notes": ["2023-12 개장, 포토존 다수, 대기 긴 편, 기념품샵/뽑기/카페 구성"]
+    }
+  ]
+}
